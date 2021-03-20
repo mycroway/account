@@ -21,6 +21,14 @@ const User = db.connection.define('users', {
 	role: {
 		type: db.Sequelize.STRING,
 		defaultValue: 'user'
+	},
+	blocked: {
+		type: db.Sequelize.BOOLEAN,
+		defaultValue: false
+	},
+	emailChecked: {
+		type: db.Sequelize.BOOLEAN,
+		defaultValue: false
 	}
 })
 
