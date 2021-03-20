@@ -15,5 +15,16 @@
   "bugs": {
     "url": "https://github.com/mycroway/account/issues"
   },
-  "homepage": "https://github.com/mycroway/account#readme"
+  "homepage": "https://github.com/mycroway/account#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "nodemailer": "^6.5.0",
+    "sequelize": "^6.5.1"
+  }
 }
