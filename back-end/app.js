@@ -9,6 +9,7 @@ const util = require('util')
 const randomBytes = util.promisify(crypto.randomBytes)
 const emailTemplate = require('./email/template')
 const TokenVerify = require('./models/TokenVerify')
+const Token = require('./models/Token')
 require('dotenv').config()
 
 // API config
@@ -26,7 +27,7 @@ app.get('/create', async (req, res) => {
 
 	if (!name && !email && !gender && !password) {
 		res.json({
-			error: 'alguns dos dados estam incorretoa'
+			error: 'Alguns dos dados estavam incorretos'
 		})
 	} else {
 
@@ -120,6 +121,41 @@ app.put('/verify/email/:token', async (req, res) => {
 		res.json({
 			error: 'O token de verificação é inválido ou o seu e-mail já foi verificado'
 		})
+	}
+})
+
+app.get('/login', async (req, res) => {
+	var { email, password } = req.body
+	
+	if (email && password) {
+	var user = await User.findOne({
+		where: {
+			email: email
+		}
+	})
+	
+	var correct = bcrypt.compareSync(password, user.password)
+	
+	if (correct) {
+		
+		var token = await randomBytes(20)
+		token = token.toString('hex')
+		
+		Token.create({
+			token,
+			userId: user.id
+		})
+		
+		user.password = '*******'
+		
+		res.json({msg: 'Usuário logado com sucesso!', token, user})
+		
+	} else {
+		res.json({error: 'Senha incorreta!'})
+	}
+	
+	} else {
+		res.json({error: 'Alguns dos dados estavam incorretos'})
 	}
 })
 
