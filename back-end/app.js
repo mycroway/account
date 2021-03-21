@@ -20,6 +20,21 @@ app.use(bodyParser.json())
 
 
 // Routers
+app.get('/:token', async (req, res) => {
+	var token = req.params.token
+
+	var tokenCreated = await Token.findOne({
+		where: {
+			token: token
+		},
+		include: {
+			model: User
+		}})
+		tokenCreated.user.password = '*******'
+		
+		res.json(tokenCreated.user)
+})
+
 app.get('/create', async (req, res) => {
 	var {
 		name, email, gender, password
@@ -125,37 +140,46 @@ app.put('/verify/email/:token', async (req, res) => {
 })
 
 app.get('/login', async (req, res) => {
-	var { email, password } = req.body
-	
+	var {
+		email,
+		password
+	} = req.body
+
 	if (email && password) {
-	var user = await User.findOne({
-		where: {
-			email: email
-		}
-	})
-	
-	var correct = bcrypt.compareSync(password, user.password)
-	
-	if (correct) {
-		
-		var token = await randomBytes(20)
-		token = token.toString('hex')
-		
-		Token.create({
-			token,
-			userId: user.id
+		var user = await User.findOne({
+			where: {
+				email: email
+			}
 		})
-		
-		user.password = '*******'
-		
-		res.json({msg: 'Usuário logado com sucesso!', token, user})
-		
+
+		var correct = bcrypt.compareSync(password, user.password)
+
+		if (correct) {
+
+			var token = await randomBytes(20)
+			token = token.toString('hex')
+
+			Token.create({
+				token,
+				userId: user.id
+			})
+
+			user.password = '*******'
+
+			res.json({
+				msg: 'Usuário logado com sucesso!', token, user
+			})
+
+		} else {
+			res.json({
+				error: 'Senha incorreta!'
+			})
+		}
+
 	} else {
-		res.json({error: 'Senha incorreta!'})
-	}
-	
-	} else {
-		res.json({error: 'Alguns dos dados estavam incorretos'})
+		res.json({
+			error: 'Alguns dos dados estavam incorretos'
+		})
 	}
 })
 
