@@ -23,21 +23,37 @@ app.use(bodyParser.json())
 app.get('/:token', async (req, res) => {
 	var token = req.params.token
 
-	var tokenCreated = await Token.findOne({
-		where: {
-			token: token
-		},
-		include: {
-			model: User
-		}})
-		tokenCreated.user.password = '*******'
-		
-		res.json(tokenCreated.user)
+	try {
+		var tokenCreated = await Token.findOne({
+			where: {
+				token: token
+			},
+			include: {
+				model: User
+			}})
+
+		if (tokenCreated) {
+			tokenCreated.user.password = '*******'
+
+			res.json(tokenCreated.user)
+		} else {
+			res.json({
+				error: 'Login inválido'
+			})
+		}
+	} catch (error) {
+		res.json({
+			error: 'Houve um erro inesperado'
+		})
+	}
 })
 
 app.get('/create', async (req, res) => {
 	var {
-		name, email, gender, password
+		name,
+		email,
+		gender,
+		password
 	} = req.body
 
 	if (!name && !email && !gender && !password) {
@@ -139,7 +155,7 @@ app.put('/verify/email/:token', async (req, res) => {
 	}
 })
 
-app.get('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
 	var {
 		email,
 		password
@@ -179,6 +195,32 @@ app.get('/login', async (req, res) => {
 	} else {
 		res.json({
 			error: 'Alguns dos dados estavam incorretos'
+		})
+	}
+})
+
+app.post('/logout/:token', async (req, res) => {
+	var token = req.params.token
+
+	try {
+		Token.destroy({
+			where: {
+				token: token
+			}
+		}).then(() => {
+
+			res.json({
+				msg: 'O logout foi feito com sucesso!'
+			})
+
+		}).catch((error) => {
+			res.json({
+				error: 'Houve um erro inesperado'
+			})
+		})
+	} catch (error) {
+		res.json({
+			error: 'Houve um erro inesperado!'
 		})
 	}
 })
