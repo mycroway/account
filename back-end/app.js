@@ -11,6 +11,7 @@ const emailTemplate = require('./email/template')
 const TokenVerify = require('./models/TokenVerify')
 const Token = require('./models/Token')
 require('dotenv').config()
+const loginAuth = require('./auth/login')
 
 // API config
 app.use(bodyParser.urlencoded({
@@ -20,8 +21,8 @@ app.use(bodyParser.json())
 
 
 // Routers
-app.get('/:token', async (req, res) => {
-	var token = req.params.token
+app.get('/', loginAuth, async (req, res) => {
+	var token = req.query["token"]
 
 	try {
 		var tokenCreated = await Token.findOne({
@@ -79,7 +80,7 @@ app.get('/create', async (req, res) => {
 			token_verify = token_verify.toString('hex')
 
 			var text1Email = `Muito obrigado por criar a sua conta na Mycroway! Por segurança precisamos que você clique no butão abaixo para fazer a verificação do seu email`
-			var hostEmail = req.protocol+'://'+req.headers.host+'/verify/email/'+token_verify
+			var hostEmail = req.protocol+'://'+req.headers.host+'/verify?token='+token_verify
 
 			var verifyEmail = new emailTemplate(name, text1Email, hostEmail, 'Verificar email', 'Caso você não tenha criado uma conta na Mycroway, não clique no butão de confirmação acima.')
 
@@ -109,8 +110,8 @@ app.get('/create', async (req, res) => {
 	}
 })
 
-app.put('/verify/email/:token', async (req, res) => {
-	var token = req.params.token
+app.put('/verify', loginAuth, async (req, res) => {
+	var token = req.query["token"]
 
 	var tokenCreated = await TokenVerify.findOne({
 		where: {
@@ -199,8 +200,8 @@ app.post('/login', async (req, res) => {
 	}
 })
 
-app.post('/logout/:token', async (req, res) => {
-	var token = req.params.token
+app.post('/logout', loginAuth, async (req, res) => {
+	var token = req.query["token"]
 
 	try {
 		Token.destroy({
