@@ -80,7 +80,7 @@ app.get('/create', async (req, res) => {
 			token_verify = token_verify.toString('hex')
 
 			var text1Email = `Muito obrigado por criar a sua conta na Mycroway! Por segurança precisamos que você clique no butão abaixo para fazer a verificação do seu email`
-			var hostEmail = req.protocol+'://'+req.headers.host+'/verify?token='+token_verify
+			var hostEmail = req.protocol+'://'+req.headers.host+'/verify?token_verify='+token_verify
 
 			var verifyEmail = new emailTemplate(name, text1Email, hostEmail, 'Verificar email', 'Caso você não tenha criado uma conta na Mycroway, não clique no butão de confirmação acima.')
 
@@ -111,7 +111,7 @@ app.get('/create', async (req, res) => {
 })
 
 app.put('/verify', loginAuth, async (req, res) => {
-	var token = req.query["token"]
+	var token = req.query["token_verify"]
 
 	var tokenCreated = await TokenVerify.findOne({
 		where: {
@@ -161,41 +161,46 @@ app.post('/login', async (req, res) => {
 		email,
 		password
 	} = req.body
+	try {
+		if (email && password) {
+			var user = await User.findOne({
+				where: {
+					email: email
+				}
+			})
 
-	if (email && password) {
-		var user = await User.findOne({
-			where: {
-				email: email
+			var correct = bcrypt.compareSync(password, user.password)
+
+			if (correct) {
+
+				var token = await randomBytes(20)
+				token = token.toString('hex')
+
+				Token.create({
+					token,
+					userId: user.id
+				})
+
+				user.password = '*******'
+
+				res.json({
+					msg: 'Usuário logado com sucesso!', token, user
+				})
+
+			} else {
+				res.json({
+					error: 'Senha incorreta!'
+				})
 			}
-		})
-
-		var correct = bcrypt.compareSync(password, user.password)
-
-		if (correct) {
-
-			var token = await randomBytes(20)
-			token = token.toString('hex')
-
-			Token.create({
-				token,
-				userId: user.id
-			})
-
-			user.password = '*******'
-
-			res.json({
-				msg: 'Usuário logado com sucesso!', token, user
-			})
 
 		} else {
 			res.json({
-				error: 'Senha incorreta!'
+				error: 'Alguns dos dados estavam incorretos'
 			})
 		}
-
-	} else {
+	} catch (error) {
 		res.json({
-			error: 'Alguns dos dados estavam incorretos'
+			error: 'Houve um erro inesperado!'
 		})
 	}
 })
@@ -222,6 +227,34 @@ app.post('/logout', loginAuth, async (req, res) => {
 	} catch (error) {
 		res.json({
 			error: 'Houve um erro inesperado!'
+		})
+	}
+})
+
+app.delete('/', loginAuth, async (req, res) => {
+	const token = req.query["token"]
+	const tokenDatas = await Token.findOne({
+		where: {
+			token: token
+		}})
+
+	try {
+		User.destroy({
+			where: {
+				id: tokenDatas.userId
+			}})
+
+		Token.destroy({
+			where: {
+				userId: tokenDatas.userId
+			}
+		})
+		res.json({
+			msg: 'Usuário excluído com sucesso!'
+		})
+	} catch (error) {
+		res.json({
+			error: 'Houve um erro ao excluir o usuário!'
 		})
 	}
 })
