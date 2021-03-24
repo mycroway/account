@@ -259,7 +259,7 @@ app.delete('/', loginAuth, async (req, res) => {
   }
 })
 
-app.put('/update', loginAuth, async (req, res) => {
+app.patch('/update', loginAuth, async (req, res) => {
   const token = req.query["token"]
   const tokenDatas = await Token.findOne({
     where: {
