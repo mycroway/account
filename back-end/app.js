@@ -49,7 +49,7 @@ app.get('/', loginAuth, async (req, res) => {
   }
 })
 
-app.get('/create', async (req, res) => {
+app.post('/', async (req, res) => {
   var {
     name,
     email,
@@ -110,7 +110,7 @@ app.get('/create', async (req, res) => {
   }
 })
 
-app.put('/verify', loginAuth, async (req, res) => {
+app.patch('/verify', loginAuth, async (req, res) => {
   var token = req.query["token_verify"]
 
   var tokenCreated = await TokenVerify.findOne({
@@ -278,17 +278,99 @@ app.patch('/update', loginAuth, async (req, res) => {
     })
   } else {
     try {
-    var newUser = await User.update({
-      ...datas
-    }, {
-      where: {
-        id: tokenDatas.userId
-      }})
-      res.json({msg: 'Usuário atualizado com sucesso!'})
+      var newUser = await User.update({
+        ...datas
+      }, {
+        where: {
+          id: tokenDatas.userId
+        }})
+      res.json({
+        msg: 'Usuário atualizado com sucesso!'
+      })
     } catch (error) {
-      res.json({error: 'Houve um erro inesperado'})
+      res.json({
+        error: 'Houve um erro inesperado'
+      })
     }
   }
+})
+
+app.post('/forgot_password', async (req, res) => {
+  var {
+    email
+  } = req.body
+  if (email) {
+    var user = await User.findOne({
+      where: {
+        email: email
+      }})
+    if (user) {
+
+      var token = await randomBytes(5)
+      token = token.toString('hex')
+
+      User.update({
+        TokenReset: token
+      }, {
+        where: {
+          id: user.id
+        }})
+
+      var template = new emailTemplate(user.name, 'Confira abaixo o teken para fazer a redefinição da sua senha!', '/', '', 'Caso não tenha pedido para redefinir sua senha, ignore este e-mail!', token)
+
+      emailConfig.transporter.sendMail({
+        from: `Mycroway <${process.env.EMAIL}>`,
+        to: email,
+        subject: "Confirmação de email",
+        html: template.Render()
+      })
+
+      res.status(200)
+      res.json({
+        msg: 'foi enviando um token para Redefinição de email!'
+      })
+
+    } else {
+      res.status(404)
+      res.json({
+        error: 'Usuário ainda não cadastro!'
+      })
+    }
+  } else {
+    res.status(404)
+    res.json({
+      error: 'Dados inválidos'
+    })
+  }
+})
+
+app.patch('/reset', async (req, res) => {
+  var { token, password } = req.body
+  
+  if (!token) {
+    res.status(404)
+    res.json({error: 'Token inválido!'})
+  }
+  
+  if (!password) {
+    res.status(404)
+    res.json({error: 'Senha invalida!'})
+  }
+  
+  var user = await User.findOne({where: {
+    TokenReset: token
+  }})
+  
+  if (user) {
+    var hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+    User.update({password: hash, TokenReset: null}, {where: {id: user.id}})
+    res.status(200)
+    res.json({msg: 'Senha redefinida com sucesso!'})
+  } else {
+    res.status(404)
+    res.json({error: 'Token inválido!'})
+  }
+  
 })
 
 
