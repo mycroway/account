@@ -30,7 +30,7 @@ const User = db.connection.define('users', {
     type: db.Sequelize.BOOLEAN,
     defaultValue: false
   },
-  TokenReset: {
+  token: {
     type: db.Sequelize.STRING,
     allowNull: true
   }

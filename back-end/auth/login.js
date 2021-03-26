@@ -1,24 +1,35 @@
-const Token = require('../models/Token')
+const jwt = require("jsonwebtoken");
+require('dotenv').config
+
+const JWTSecret = process.env["JWT_SECRET"];
+
 
 module.exports = async (req, res, next) => {
-	var token = req.query["token"]
-	
-	if (token) {
-		
-		var tokenCreated = await Token.findOne({
-			where: {
-				token: token
-			}
-		})
-		
-		if (tokenCreated) {
-			next()
-		} else {
-			res.json({ error: "Login inválido!" })
-		}
-		
-	} else {
-		res.json({ error: "O Usuário não está conectado a sua conta!"})
-	}
-	
+  const authToken = req.headers['authorization']
+
+  if (authToken != undefined) {
+    const token = authToken.split(' ')
+
+    jwt.verify(token[1], JWTSecret, (error, data) => {
+      if (error) {
+        res.status(401);
+        res.json({
+          message: "Token de login inválido!"
+        });
+      } else {
+        req.token = token
+        req.user = {
+          id: data.userId
+        }
+        next()
+      }
+    });
+  } else {
+    res.status(401);
+    res.json({
+      message: "O usuário não está logado, e para acessar esta página ele precisa está"
+
+    });
+  }
+
 }
