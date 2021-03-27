@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'font-medium';
+  src: url('assets/fonts/Poppins-Medium.ttf');
+}
+
+@font-face {
+  font-family: 'main-font';
+  src: url('assets/fonts/Poppins-Light.ttf');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: #fff;
+  background: rgb(32, 33, 37);
+  font-family: 'main-font';
+}
