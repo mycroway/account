@@ -8,6 +8,11 @@
   src: url('assets/fonts/Poppins-Light.ttf');
 }
 
+@font-face {
+  font-family: 'microsoft-font';
+  src: url('assets/fonts/microsoft.ttf');
+}
+
 * {
   margin: 0;
   padding: 0;

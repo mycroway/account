@@ -1,0 +1,20 @@
+<button (focus)="toVisible()" (blur)="toInvisible()" class="container">
+  <div id="dot">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</button>
+<div class="body" *ngIf="enable">
+  <ul>
+    <a href="http://search.mycroway.com">
+      <li>Mycroway Search</li>
+    </a>
+    <a href="http://dictionary.mycroway.com">
+      <li>Mycroway Dictionary</li>
+    </a>
+    <a href="http://devs.mycroway.com">
+      <li>Mycroway Devs</li>
+    </a>
+  </ul>
+</div>

@@ -3,10 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DropDownComponent } from './components/template/header/drop-down/drop-down.component';
+import { ProfileComponent } from './components/template/header/profile/profile.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DropDownComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
