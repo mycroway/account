@@ -208,7 +208,6 @@ app.post('/auth', async (req, res) => {
 })
 
 app.delete('/', loginAuth, async (req, res) => {
-  console.log('>>>>passou')
   try {
     var user = await User.findOne({
       where: {
