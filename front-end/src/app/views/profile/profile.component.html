@@ -1,0 +1,18 @@
+<mat-icon (click)="deleteAccount()" class="delete-icon" aria-hidden="false" aria-label="delete icon">delete</mat-icon>
+
+
+<div class="container">
+  <img src="assets/img/icons/user.png" alt="icon user" class="icon">
+  <form>
+    <div class="input">
+      <input type="text" id="name" [(value)]="user.name" name="name" />
+    </div>
+    <div class="input">
+      <select [(value)]="user.gender">
+        <option value="male">Masculino</option>
+        <option value="female">Feminino</option>
+      </select>
+    </div>
+    <button (click)="updateAccount()" class="input button" type="button">Confirmar</button>
+  </form>
+</div>

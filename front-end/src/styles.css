@@ -16,6 +16,7 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: 'font-medium';
 }
 
 body {
@@ -23,3 +24,5 @@ body {
   background: rgb(32, 33, 37);
   font-family: 'main-font';
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
