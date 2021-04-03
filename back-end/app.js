@@ -12,6 +12,7 @@ require('dotenv').config()
 const loginAuth = require('./auth/login')
 const jwt = require("jsonwebtoken");
 const JWTSecret = process.env["JWT_SECRET"];
+const cors = require('cors')
 
 // API config
 app.use(bodyParser.urlencoded({
@@ -19,9 +20,12 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
+app.use(cors())
+
 
 // Routers
 app.get('/', loginAuth, async (req, res) => {
+  //req.user = {id: 3}
   try {
     var user = await User.findOne({
       where: {
@@ -30,6 +34,7 @@ app.get('/', loginAuth, async (req, res) => {
 
     if (user) {
       user.password = undefined
+      user.dataValues.token = undefined
       res.status(200)
       res.json({
         ...user.dataValues
@@ -203,6 +208,7 @@ app.post('/auth', async (req, res) => {
 })
 
 app.delete('/', loginAuth, async (req, res) => {
+  console.log('>>>>passou')
   try {
     var user = await User.findOne({
       where: {
@@ -235,7 +241,7 @@ app.delete('/', loginAuth, async (req, res) => {
 
 app.patch('/', loginAuth, async (req, res) => {
   const datas = req.body
-
+  
   if (datas.email) {
     res.status(401)
     res.json({
