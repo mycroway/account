@@ -53,14 +53,16 @@
 
 .container form .input select {
   width: 90%;
-  font-size: .9rem;
+  font-size: 1rem;
   background: #333;
   color: #fff;
   border: none;
   outline: none;
+  font-family: 'microsoft-font';
 }
 
 .container form .button {
   font-size: 1rem;
   background-color: rgb(0,140,255);
+  font-family: 'microsoft-font';
 }

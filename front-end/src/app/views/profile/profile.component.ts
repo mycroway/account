@@ -11,23 +11,32 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ProfileComponent implements OnInit {
   
   user: User
+  storage = window.localStorage
 
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
-    this.userService.profile().subscribe(user => {
-      this.user = user
-    })
+    var token_login = this.storage.getItem('token_login')
+    
+    if (!token_login) {
+      this.router.navigate(['/login'])
+    } else {
+      this.userService.profile().subscribe(user => {
+        this.user = user
+      })
+    }
   }
   
   deleteAccount(): void {
-    alert('deleted')
-    this.router.navigate(['/'])
+    this.userService.delete().subscribe(msg => {
+      window.location.href = 'http://mycroway.com'
+    })
   }
   
   updateAccount(): void {
-    alert('updated')
-    this.router.navigate(['/'])
+    this.userService.update(this.user).subscribe(user => {
+      this.router.navigate(['/'])
+    })
   }
 
 }

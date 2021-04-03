@@ -5,10 +5,10 @@
   <img src="assets/img/icons/user.png" alt="icon user" class="icon">
   <form>
     <div class="input">
-      <input type="text" id="name" [(value)]="user.name" name="name" />
+      <input type="text" id="name" [(ngModel)]="user.name" name="name" />
     </div>
     <div class="input">
-      <select [(value)]="user.gender">
+      <select [(ngModel)]="user.gender" name="gender">
         <option value="male">Masculino</option>
         <option value="female">Feminino</option>
       </select>

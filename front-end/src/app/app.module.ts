@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input'
 import { FormsModule } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
+import { LoginComponent } from './views/login/login.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
     DropDownComponent,
     HomeComponent,
     ProfileComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

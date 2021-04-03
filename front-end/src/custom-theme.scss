@@ -22,8 +22,8 @@ $front-end-warn: mat-palette($mat-red);
 // theming systems such as "color" or "typography".
 $front-end-theme: mat-light-theme((
   color: (
-    primary: rgb(0,140,255),
-    accent: rgb(143, 205, 255),
+    primary: $front-end-primary,
+    accent: $front-end-accent,
     warn: $front-end-warn,
   )
 ));
