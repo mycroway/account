@@ -10,6 +10,8 @@ import { User } from './../../../../user/user.model'
 })
 export class ProfileComponent implements OnInit {
   
+  storage = window.localStorage
+  enable = false
   user: User
   
   constructor(private userService: UserService) { }
@@ -18,6 +20,16 @@ export class ProfileComponent implements OnInit {
     this.userService.profile().subscribe(user => {
       this.user = user
     })
+  }
+  
+  toVisible(): void {
+    this.enable = !this.enable
+  }
+
+  toInvisible(): void {
+    setTimeout(() => {
+      this.enable = false
+    }, 100)
   }
 
 }

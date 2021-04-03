@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  position: absolute;
+  flex-wrap: wrap;
+  margin-top: 50px;
+  justify-content: center;
+}
+
+.box a {
+  border: 2px #333 solid;
+  border-radius: .5rem;
+  margin: 10px;
+  height: 180px;
+  width: 330px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.box p {
+  font-family: 'font-medium';
+  font-size: 1.3rem;
+  margin-left: 10px;
+}
+
+.box img {
+  width: 150px;
+  height: 150px;
+}

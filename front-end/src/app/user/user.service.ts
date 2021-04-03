@@ -26,7 +26,7 @@ export class UserService {
   }
   
   errorHandler(e: any): Observable<any> {
-    alert('Houve um erro')
+    alert('Houve um erro inesperado!')
     return EMPTY;
   }
 }

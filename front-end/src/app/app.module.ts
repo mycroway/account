@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DropDownComponent } from './components/template/header/drop-down/drop-down.component';
 import { ProfileComponent } from './components/template/header/profile/profile.component';
+import { HomeComponent } from './views/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DropDownComponent,
     ProfileComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

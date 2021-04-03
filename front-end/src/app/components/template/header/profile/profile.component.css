@@ -16,3 +16,74 @@
   outline: none;
   font-size: 1rem;
 }
+
+.body {
+  font-family: 'microsoft-font';
+  width: 250px;
+  height: 150px;
+  background: rgb(51,51,51);
+  font-size: .9rem;
+  position: absolute;
+  top: 39px;
+  right: 5px;
+  padding: 15px;
+  border-radius: .2rem;
+  font-weight: 300;
+  text-align: left;
+  z-index: 1;
+}
+
+.body footer {
+  border-top: 2px rgb(101,101,101) solid;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: .8em;
+  font-family: 'main-font';
+}
+
+.body footer p {
+  margin-left: -5px;
+}
+
+.body footer img {
+  width: 60px;
+  margin-right: -5px;
+}
+
+.logo {
+  width: 70px;
+  position: absolute;
+  left: 0px;
+  top: 39%;
+  transform: translateY(-39%);
+}
+
+.user-datas {
+  position: absolute;
+  top: 40%;
+  left: 65px;
+  transform: translateY(-40%);
+}
+
+#email {
+  font-size: .9em;
+}
+
+.to-home {
+  position: absolute;
+  top: 60%;
+  left: 65px;
+  transform: translateY(-60%);
+  color: rgb(0, 140, 255);
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
