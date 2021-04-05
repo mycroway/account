@@ -13,7 +13,8 @@ import { FormsModule } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
 import { LoginComponent } from './views/login/login.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { LogoutComponent } from './components/template/header/logout/logout.component'
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
     HomeComponent,
     ProfileComponent,
     LoginComponent,
+    LogoutComponent,
   ],
   imports: [
     BrowserModule,
