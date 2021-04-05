@@ -36,6 +36,7 @@ export class ProfileComponent implements OnInit {
   
   updateAccount(): void {
     this.userService.update(this.user).subscribe(user => {
+      this.userService.showMessage('Dados atualizados com sucesso!', false)
       this.router.navigate(['/'])
     })
   }

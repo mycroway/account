@@ -67,9 +67,10 @@
   font-family: 'microsoft-font';
 }
 
-h1 {
+p {
   font-family: 'microsoft-font';
-  margin-left: 5px;
-  margin-right: 5px;
+  width: 350px;
   text-align: center;
+  font-size: 1rem;
+  margin-bottom: 50px;
 }

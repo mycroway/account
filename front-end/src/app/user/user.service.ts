@@ -9,6 +9,14 @@ import { MatSnackBar} from '@angular/material/snack-bar'
 interface Token  {
   token: string
 }
+interface UserCreated  {
+  msg: string,
+  user: object
+}
+interface Verify  {
+  msg: string,
+  token: string
+}
 
 @Injectable({
   providedIn: 'root'
@@ -68,8 +76,27 @@ export class UserService {
     )
   }
   
+  create(user: User): Observable<UserCreated> {
+    return this.http.post<UserCreated>(this.baseUrl, user).pipe(
+      map(obj => obj),
+      catchError(e => this.errorHandler(e))
+    )
+  }
+  
+  verify(token: string): Observable<Verify> {
+    return this.http.patch<Verify>(this.baseUrl+'/verify', {token}).pipe(
+      map(obj => obj),
+      catchError(e => this.errorHandler(e))
+    )
+  }
+  
   errorHandler(e: any): Observable<any> {
     this.showMessage(e.error.error, true)
+    
+    if (e.error.error == 'O seu e-mail ainda não foi válidado!') {
+      this.router.navigate(['/verify'])
+    }
+    
     if (e.status == 401) {
       this.storage.removeItem('token_login')
       this.router.navigate(['/login'])

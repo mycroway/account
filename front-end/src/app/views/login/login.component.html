@@ -1,5 +1,5 @@
 <div class="container">
-  <img src="assets/img/icons/user.png" alt="icon user" class="icon">
+  <h1>Insira os seguintes dados:</h1>
   <form>
     <div class="input">
       <input type="email" placeholder="Digite aqui o seu e-mail" id="email" [(ngModel)]="user.email" name="email" />
@@ -9,4 +9,5 @@
     </div>
     <button (click)="auth()" class="input button" type="button">Fazer login</button>
   </form>
+  <a routerLink="/create">Ainda não tenho uma conta!</a>
 </div>

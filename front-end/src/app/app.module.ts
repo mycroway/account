@@ -14,7 +14,9 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
 import { LoginComponent } from './views/login/login.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { LogoutComponent } from './components/template/header/logout/logout.component'
+import { LogoutComponent } from './components/template/header/logout/logout.component';
+import { CreateComponent } from './views/create/create.component';
+import { VerifyComponent } from './components/create/verify/verify.component'
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { LogoutComponent } from './components/template/header/logout/logout.comp
     ProfileComponent,
     LoginComponent,
     LogoutComponent,
+    CreateComponent,
+    VerifyComponent,
   ],
   imports: [
     BrowserModule,
