@@ -1,1 +1,12 @@
-<p style="margin-top:50px;">login works!</p>
+<div class="container">
+  <img src="assets/img/icons/user.png" alt="icon user" class="icon">
+  <form>
+    <div class="input">
+      <input type="email" placeholder="Digite aqui o seu e-mail" id="email" [(ngModel)]="user.email" name="email" />
+    </div>
+    <div class="input">
+      <input [(ngModel)]="user.password" placeholder="Digite seu senha aqui" type="password" id="password" name="password" />
+    </div>
+    <button (click)="auth()" class="input button" type="button">Fazer login</button>
+  </form>
+</div>

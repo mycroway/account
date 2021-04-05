@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserService } from './../../user/user.service'
 
 @Component({
   selector: 'app-home',
@@ -10,14 +11,10 @@ export class HomeComponent implements OnInit {
   
   storage = window.localStorage
   
-  constructor(private router: Router) { }
+  constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    var token_login = this.storage.getItem('token_login')
-    
-    if (!token_login) {
-      this.router.navigate(['/login'])
-    }
+    this.userService.profile().subscribe()
   }
 
 }

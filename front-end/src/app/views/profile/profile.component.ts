@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit {
   
   deleteAccount(): void {
     this.userService.delete().subscribe(msg => {
+      this.storage.removeItem('token_login')
       window.location.href = 'http://mycroway.com'
     })
   }

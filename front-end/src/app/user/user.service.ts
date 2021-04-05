@@ -3,7 +3,12 @@ import { User } from './user.model'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, EMPTY } from "rxjs";
 import { map, catchError } from "rxjs/operators";
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar} from '@angular/material/snack-bar'
 
+interface Token  {
+  token: string
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +22,17 @@ export class UserService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer '+this.token })
   }
   
-  constructor(private http: HttpClient) { }
+  constructor(private snackBar: MatSnackBar, private http: HttpClient, private router: Router) { }
+  
+  
+  showMessage(msg: string, isError: boolean = false): void {
+    this.snackBar.open(msg, "", {
+      duration: 5000,
+      horizontalPosition: "right",
+      verticalPosition: "top",
+      panelClass: isError ? ["msg-error"] : ["msg-success"]
+    });
+  }
   
   
   profile(): Observable<User> {
@@ -46,11 +61,25 @@ export class UserService {
     )
   }
   
+  auth(email: string, password: string): Observable<Token> {
+    return this.http.post<Token>(this.baseUrl+'/auth', {email: email, password: password}).pipe(
+      map(obj => obj),
+      catchError(e => this.errorHandler(e))
+    )
+  }
+  
   errorHandler(e: any): Observable<any> {
-    alert('Houve um erro inesperado!')
-    if (e.status >= 400 && e.status < 500) {
+    this.showMessage(e.error.error, true)
+    if (e.status == 401) {
       this.storage.removeItem('token_login')
+      this.router.navigate(['/login'])
     }
+    
+    if (e.status == 404) {
+      this.storage.removeItem('token_login')
+      this.router.navigate(['/create'])
+    }
+    
     return EMPTY;
   }
 }

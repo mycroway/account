@@ -18,10 +18,17 @@
   padding: 0;
 }
 
-body {
-  color: #fff;
-  background: rgb(32, 33, 37);
-  font-family: 'main-font';
-}
 html, body { height: 100%; }
-body { margin: 0; font-family: 'font-medium'; }
+body { color: #fff; background: rgb(32, 33, 37); margin: 0; font-family: 'font-medium'; }
+
+.msg-success {
+  background-color: #28a745;
+  color: #fff;
+  font-family: 'font-medium';
+}
+
+.msg-error {
+  background-color: #e35e6b;
+  color: #fff;
+  font-family: 'font-medium';
+}
