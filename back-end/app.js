@@ -10,6 +10,7 @@ const randomBytes = util.promisify(crypto.randomBytes)
 const emailTemplate = require('./email/template')
 require('dotenv').config()
 const loginAuth = require('./auth/login')
+const checkedAuth = require('./auth/checked')
 const jwt = require("jsonwebtoken");
 const JWTSecret = process.env["JWT_SECRET"];
 const cors = require('cors')
@@ -80,8 +81,8 @@ app.post('/', async (req, res) => {
 
       var hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 
-      var token_verify = await randomBytes(5)
-      token_verify = token_verify.toString('hex')
+      var token_verify = await randomBytes(3)
+      token_verify = token_verify.toString('hex').toUpperCase()
 
       var text1Email = `Muito obrigado por criar a sua conta na Mycroway! Por segurança precisamos que você faça a verificação do seu email.`
 
@@ -112,8 +113,8 @@ app.post('/', async (req, res) => {
   }
 })
 
-app.patch('/verify', loginAuth, async (req, res) => {
-  var token = req.query["token"]
+app.patch('/verify', async (req, res) => {
+  var token = req.body.token
 
   if (!token) {
     res.status(401)
@@ -135,10 +136,16 @@ app.patch('/verify', loginAuth, async (req, res) => {
         emailChecked: true,
         token: null
       })
-
-      res.status(200)
-      res.json({
-        msg: 'Perfeito! o seu e-mail foi verificado com sucesso!'
+      jwt.sign({
+        userId: user.id
+      }, JWTSecret, {
+        expiresIn: '12h'
+      }, (error, token) => {
+        res.status(200)
+        res.json({
+          msg: 'Perfeito! o seu e-mail foi verificado com sucesso!',
+          token
+        })
       })
     } catch(error) {
       res.json({
@@ -147,6 +154,7 @@ app.patch('/verify', loginAuth, async (req, res) => {
     }
 
   } else {
+    res.status(400)
     res.json({
       error: 'O token de verificação é inválido ou o seu e-mail já foi verificado'
     })
@@ -158,6 +166,7 @@ app.post('/auth', async (req, res) => {
     email,
     password
   } = req.body
+
   try {
     if (email && password) {
       var user = await User.findOne({
@@ -166,33 +175,40 @@ app.post('/auth', async (req, res) => {
         }
       })
 
-      var correct = bcrypt.compareSync(password, user.password)
-
-      if (correct) {
-        jwt.sign({
-          userId: user.id
-        }, JWTSecret, {
-          expiresIn: '12h'
-        }, (error, token) => {
-          if (error) {
-            res.status(500)
-            res.json({
-              error
-            })
-          } else {
-            res.status(200)
-            res.json({
-              token
-            })
-          }
+      if (!user) {
+        res.status(400)
+        res.json({
+          error: 'Usuário inválido!'
         })
       } else {
-        res.status(401)
-        res.json({
-          error: 'Senha incorreta!'
-        })
-      }
 
+        var correct = bcrypt.compareSync(password, user.password)
+
+        if (correct) {
+          jwt.sign({
+            userId: user.id
+          }, JWTSecret, {
+            expiresIn: '12h'
+          }, (error, token) => {
+            if (error) {
+              res.status(500)
+              res.json({
+                error: 'Houve um erro no nosso sistema, desculpe tente mais tarde!'
+              })
+            } else {
+              res.status(200)
+              res.json({
+                token
+              })
+            }
+          })
+        } else {
+          res.status(401)
+          res.json({
+            error: 'Senha incorreta!'
+          })
+        }
+      }
     } else {
       res.status(400)
       res.json({
@@ -202,7 +218,7 @@ app.post('/auth', async (req, res) => {
   } catch (error) {
     res.status(500)
     res.json({
-      error: 'Houve um erro inesperado!'
+      error: 'Houve um erro no nosso sistema, desculpe tente mais tarde!'
     })
   }
 })
@@ -238,9 +254,9 @@ app.delete('/', loginAuth, async (req, res) => {
   }
 })
 
-app.patch('/', loginAuth, async (req, res) => {
+app.patch('/', checkedAuth, async (req, res) => {
   const datas = req.body
-  
+
   if (datas.email) {
     res.status(401)
     res.json({
@@ -283,8 +299,8 @@ app.post('/forgot_password', async (req, res) => {
       }})
     if (user) {
 
-      var token = await randomBytes(5)
-      token = token.toString('hex')
+      var token = await randomBytes(3)
+      token = token.toString('hex').toUpperCase()
 
       User.update({
         token: token
@@ -304,7 +320,7 @@ app.post('/forgot_password', async (req, res) => {
 
       res.status(200)
       res.json({
-        msg: 'foi enviando um token para Redefinição de email!'
+        msg: 'foi enviando um token para redefinição de senha para o seu e-mail!'
       })
 
     } else {

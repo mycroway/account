@@ -16,7 +16,10 @@ import { LoginComponent } from './views/login/login.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LogoutComponent } from './components/template/header/logout/logout.component';
 import { CreateComponent } from './views/create/create.component';
-import { VerifyComponent } from './components/create/verify/verify.component'
+import { VerifyComponent } from './components/create/verify/verify.component';
+import { ForgotComponent } from './views/password/forgot/forgot.component';
+import { TokenComponent } from './views/password/token/token.component';
+import { ResetComponent } from './views/password/reset/reset.component'
 
 @NgModule({
   declarations: [
@@ -28,6 +31,9 @@ import { VerifyComponent } from './components/create/verify/verify.component'
     LogoutComponent,
     CreateComponent,
     VerifyComponent,
+    ForgotComponent,
+    TokenComponent,
+    ResetComponent,
   ],
   imports: [
     BrowserModule,

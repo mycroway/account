@@ -1,0 +1,10 @@
+<div class="container">
+  <h1>Insira o seu e-mail:</h1>
+  <form>
+    <div class="input">
+      <input type="email" placeholder="Digite aqui o seu e-mail" id="email" [(ngModel)]="email" name="email" />
+    </div>
+    <button (click)="forgot()" class="input button" type="button">Continuar</button>
+  </form>
+  <a routerLink="">Cancelar</a>
+</div>

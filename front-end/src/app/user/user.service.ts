@@ -17,12 +17,16 @@ interface Verify  {
   msg: string,
   token: string
 }
+interface Msg  {
+  msg: string
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   
+  tokenPassword: string
   storage = window.localStorage
   baseUrl = 'http://localhost:3000'
   token = this.storage.getItem('token_login')
@@ -85,6 +89,31 @@ export class UserService {
   
   verify(token: string): Observable<Verify> {
     return this.http.patch<Verify>(this.baseUrl+'/verify', {token}).pipe(
+      map(obj => obj),
+      catchError(e => this.errorHandler(e))
+    )
+  }
+  
+  forgot(email: string): Observable<Msg> {
+    return this.http.post<Msg>(this.baseUrl+'/forgot_password', {email: email}).pipe(
+      map(obj => obj),
+      catchError(e => this.errorHandler(e))
+    )
+  }
+  
+  saveToken(token: string): boolean {
+    try {
+      this.tokenPassword = token
+      return true
+    } catch(e) {
+      this.errorHandler(e).subscribe(() => {
+        return false
+      })
+    }
+  }
+  
+  resetPassword(password: string): Observable<Msg> {
+    return this.http.patch<Msg>(this.baseUrl+'/reset', {token: this.tokenPassword, password: password}).pipe(
       map(obj => obj),
       catchError(e => this.errorHandler(e))
     )

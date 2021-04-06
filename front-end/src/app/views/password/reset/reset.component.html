@@ -1,0 +1,13 @@
+<div class="container">
+  <h1>Insira a sua nova senha:</h1>
+  <form>
+    <div class="input">
+      <input type="password" placeholder="Digite sua nova senha" id="password" [(ngModel)]="password" name="password" />
+    </div>
+    <div class="input">
+      <input type="password" placeholder="Digite novamente sua nova senha" id="password2" [(ngModel)]="password2" name="password2" />
+    </div>
+    <button (click)="resetPassword()" class="input button" type="button">Redefinir</button>
+  </form>
+  <a routerLink="">Cancelar</a>
+</div>

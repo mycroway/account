@@ -5,6 +5,9 @@ import { ProfileComponent } from './views/profile/profile.component';
 import { LoginComponent } from './views/login/login.component';
 import { CreateComponent } from './views/create/create.component';
 import { VerifyComponent } from './components/create/verify/verify.component';
+import { ForgotComponent } from './views/password/forgot/forgot.component';
+import { TokenComponent } from './views/password/token/token.component'
+import { ResetComponent } from './views/password/reset/reset.component'
 
 const routes: Routes = [{
   path: '', 
@@ -21,6 +24,15 @@ const routes: Routes = [{
 }, {
   path: 'verify',
   component: VerifyComponent
+}, {
+  path: 'password/forgot', 
+  component: ForgotComponent
+}, {
+  path: 'password/token',
+  component: TokenComponent
+}, {
+  path: 'password/reset',
+  component: ResetComponent
 }];
 
 @NgModule({
