@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const util = require('util')
 const randomBytes = util.promisify(crypto.randomBytes)
 const emailTemplate = require('./email/template')
+const verifyTemplateEmail = require('./email/verify')
 require('dotenv').config()
 const loginAuth = require('./auth/login')
 const checkedAuth = require('./auth/checked')
@@ -84,10 +85,6 @@ app.post('/', async (req, res) => {
       var token_verify = await randomBytes(3)
       token_verify = token_verify.toString('hex').toUpperCase()
 
-      var text1Email = `Muito obrigado por criar a sua conta na Mycroway! Por segurança precisamos que você faça a verificação do seu email.`
-
-      var verifyEmail = new emailTemplate(name, text1Email, '/', '', 'Caso você não tenha criado uma conta na Mycroway, ignore este e-mail.', token_verify)
-
       var user = await User.create({
         name,
         email,
@@ -101,10 +98,10 @@ app.post('/', async (req, res) => {
       emailConfig.transporter.sendMail({
         from: `Mycroway <${process.env.EMAIL}>`,
         to: email,
-        subject: "Confirmação de email",
-        html: verifyEmail.Render()
-
+        subject: "Verificação de e-mail",
+        html: await verifyTemplateEmail(user, token_verify)
       })
+      
       res.status(200)
       res.json({
         user, msg: 'Enviamos um e-mail com um token de verificação.'

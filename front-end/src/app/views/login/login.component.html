@@ -9,5 +9,9 @@
     </div>
     <button (click)="auth()" class="input button" type="button">Fazer login</button>
   </form>
-  <a routerLink="/create">Ainda não tenho uma conta!</a>
+  <div style="display: flex; font-size: .7rem;">
+  <a routerLink="/create">Ainda não tenho uma conta</a>
+  <div style="width: 2px; height: 1rem; background: #333; margin-left: 5px; margin-top: auto; margin-bottom: auto;"></div>
+  <a routerLink="/password/forgot" style="margin-left: 5px; ">Esqueci minha senha</a>
+  </div>
 </div>
