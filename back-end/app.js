@@ -7,8 +7,8 @@ const emailConfig = require('./email/')
 const crypto = require('crypto');
 const util = require('util')
 const randomBytes = util.promisify(crypto.randomBytes)
-const emailTemplate = require('./email/template')
 const verifyTemplateEmail = require('./email/verify')
+const passwordTemplateEmail = require('./email/password')
 require('dotenv').config()
 const loginAuth = require('./auth/login')
 const checkedAuth = require('./auth/checked')
@@ -101,7 +101,7 @@ app.post('/', async (req, res) => {
         subject: "Verificação de e-mail",
         html: await verifyTemplateEmail(user, token_verify)
       })
-      
+
       res.status(200)
       res.json({
         user, msg: 'Enviamos um e-mail com um token de verificação.'
@@ -295,31 +295,35 @@ app.post('/forgot_password', async (req, res) => {
         email: email
       }})
     if (user) {
+      try {
+        var token = await randomBytes(3)
+        token = token.toString('hex').toUpperCase()
 
-      var token = await randomBytes(3)
-      token = token.toString('hex').toUpperCase()
+        User.update({
+          token: token
+        }, {
+          where: {
+            id: user.id
+          }})
 
-      User.update({
-        token: token
-      }, {
-        where: {
-          id: user.id
-        }})
+        emailConfig.transporter.sendMail({
+          from: `Mycroway <${process.env.EMAIL}>`,
+          to: email,
+          subject: "Redefinição de senha",
+          html: await passwordTemplateEmail(user, token)
+        })
 
-      var template = new emailTemplate(user.name, 'Confira abaixo o teken para fazer a redefinição da sua senha!', '/', '', 'Caso não tenha pedido para redefinir sua senha, ignore este e-mail!', token)
-
-      emailConfig.transporter.sendMail({
-        from: `Mycroway <${process.env.EMAIL}>`,
-        to: email,
-        subject: "Confirmação de email",
-        html: template.Render()
-      })
-
-      res.status(200)
-      res.json({
-        msg: 'foi enviando um token para redefinição de senha para o seu e-mail!'
-      })
-
+        res.status(200)
+        res.json({
+          msg: 'foi enviando um token para redefinição de senha para o seu e-mail!'
+        })
+      } catch (e) {
+        console.log(e)
+        res.status(500)
+        res.json({
+          error: 'Houve um erro inesperado!'
+        })
+      }
     } else {
       res.status(404)
       res.json({
