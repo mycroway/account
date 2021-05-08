@@ -32,7 +32,8 @@ app.get('/', loginAuth, async (req, res) => {
     var user = await User.findOne({
       where: {
         id: req.user.id
-      }})
+      }
+    })
 
     if (user) {
       user.password = undefined
@@ -72,9 +73,11 @@ app.post('/', async (req, res) => {
     var userCreated = await User.findOne({
       where: {
         email: email
-      }})
+      }
+    })
 
     if (userCreated) {
+      res.status(400)
       res.json({
         error: 'Já existe um usuário com este email'
       })
@@ -100,11 +103,22 @@ app.post('/', async (req, res) => {
         to: email,
         subject: "Verificação de e-mail",
         html: await verifyTemplateEmail(user, token_verify)
-      })
+      }).then(() => {
+        res.status(200)
+        res.json({
+          user, msg: 'Enviamos um e-mail com um token de verificação.'
+        })
+      }).catch(async (error) =>  {
+        await User.destroy({
+          where: {
+            id: user.id
+          }
+        })
 
-      res.status(200)
-      res.json({
-        user, msg: 'Enviamos um e-mail com um token de verificação.'
+        res.status(500)
+        res.json({
+          error: 'Houve um erro inesperado'
+        })
       })
     }
   }
@@ -123,7 +137,8 @@ app.patch('/verify', async (req, res) => {
   var user = await User.findOne({
     where: {
       token: token
-    }})
+    }
+  })
 
   if (user) {
     user.password = undefined
@@ -144,7 +159,7 @@ app.patch('/verify', async (req, res) => {
           token
         })
       })
-    } catch(error) {
+    } catch (error) {
       res.json({
         error: 'houve um erro inesperado!'
       })
@@ -225,13 +240,15 @@ app.delete('/', loginAuth, async (req, res) => {
     var user = await User.findOne({
       where: {
         id: req.user.id
-      }})
+      }
+    })
 
     if (user) {
       User.destroy({
         where: {
           id: req.user.id
-        }})
+        }
+      })
 
       res.status(200)
       res.json({
@@ -271,7 +288,8 @@ app.patch('/', checkedAuth, async (req, res) => {
       }, {
         where: {
           id: req.user.id
-        }})
+        }
+      })
       res.status(200)
       res.json({
         msg: 'Usuário atualizado com sucesso!'
@@ -293,7 +311,8 @@ app.post('/forgot_password', async (req, res) => {
     var user = await User.findOne({
       where: {
         email: email
-      }})
+      }
+    })
     if (user) {
       try {
         var token = await randomBytes(3)
@@ -304,7 +323,8 @@ app.post('/forgot_password', async (req, res) => {
         }, {
           where: {
             id: user.id
-          }})
+          }
+        })
 
         emailConfig.transporter.sendMail({
           from: `Mycroway <${process.env.EMAIL}>`,
@@ -361,7 +381,8 @@ app.patch('/reset', async (req, res) => {
   var user = await User.findOne({
     where: {
       token: token
-    }})
+    }
+  })
 
   if (user) {
     var hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
@@ -370,7 +391,8 @@ app.patch('/reset', async (req, res) => {
     }, {
       where: {
         id: user.id
-      }})
+      }
+    })
     res.status(200)
     res.json({
       msg: 'Senha redefinida com sucesso!'
